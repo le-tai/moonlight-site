@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moonlight — Moonlight</title>
-<meta name="description" content="Moonlight — a shift and income tracker for clinicians.">
+<title>Moonlight — Shift pay &amp; income tracker</title>
+<meta name="description" content="Track call, moonlighting, and per-diem income across every employer — and watch it add up. Moonlight is coming soon to the App Store.">
 <meta name="color-scheme" content="light dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -495,13 +495,910 @@ a:focus-visible {
   outline-offset: 3px;
   border-radius: 4px;
 }
+
+/*
+ * Moonlight homepage — the marketing page at the bare domain.
+ *
+ * Inlined after style.css (tokens, masthead, footer, focus) on the homepage only, so the
+ * privacy and support pages keep their document template untouched; screens.css follows.
+ *
+ * The direction is the Hero Shots mock-up: a moonlit-navy hero, a row of app screens, and
+ * a night-sky tagline band, on the app's alabaster ground. The app screens (screens.css)
+ * are drawn in HTML and CSS rather than shipped as images, so they stay sharp at any size
+ * and cost no requests.
+ */
+
+:root {
+  /* Night sky: the hero and the band, dark in both themes. */
+  --night-glow: #3a3568;
+  --night: #15162e;
+  --night-deep: #0a0b14;
+  --night-panel: #181a26;
+  --night-edge: transparent;
+  --on-night: #f4f4f2;
+  --on-night-2: #a6a8b8;
+  --moon: #d8b06a; /* champagne, brandDark accent: 5.4:1 on the hero's lightest corner, 8.5:1 on the band */
+
+  --feature-panel: linear-gradient(165deg, #ffffff 0%, #f2f1ec 100%);
+  --feature-shadow: 0 20px 60px rgba(26, 26, 31, 0.07);
+
+  --panel-radius: clamp(1.5rem, 1.1rem + 1.6vw, 2rem);
+  --panel-pad-x: clamp(1.25rem, 0.4rem + 4vw, 4rem);
+  --panel-gap: clamp(1rem, 0.7rem + 1.2vw, 1.5rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* On the dark ground the night panels need an edge, and a shadow would not show. */
+    --night-edge: rgba(244, 244, 242, 0.08);
+    --feature-panel: linear-gradient(165deg, #181a26 0%, #12131d 100%);
+    --feature-shadow: none;
+  }
+}
+
+/* ---------- page ---------- */
+
+/* The shared masthead keeps the brand and both links on one line, which with large text
+   or a narrow window is wider than the screen and drags the whole page sideways; on this
+   page it wraps instead. */
+.masthead__inner,
+.masthead nav {
+  flex-wrap: wrap;
+}
+
+.masthead__inner {
+  row-gap: 0.25rem;
+  padding-block: 0.5rem;
+}
+
+/* Wrapped, it is tall; it only stays pinned while the screen holds 40 lines of the reader's
+   text (rem in a media query is the reader's default size), so large text or a phone on
+   its side keeps the screen for the page. */
+@media (max-height: 40rem) {
+  .masthead {
+    position: static;
+  }
+}
+
+.home {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* never wider than the screen, whatever the words */
+  gap: var(--panel-gap);
+  padding-block: clamp(1rem, 0.6rem + 1.6vw, 2rem) clamp(2.5rem, 2rem + 2vw, 4rem);
+  overflow-wrap: break-word; /* a word wider than its line breaks rather than overflows */
+}
+
+.panel {
+  position: relative;
+  isolation: isolate; /* the glows sit behind the content, inside the panel */
+  border-radius: var(--panel-radius);
+}
+
+.glow {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.eyebrow {
+  margin: 0 0 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--moon);
+  text-wrap: balance;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  overflow: hidden; /* the glows are larger than the panel */
+  padding: clamp(2.75rem, 1.8rem + 4vw, 4.5rem) var(--panel-pad-x);
+  border: 1px solid var(--night-edge);
+  background: radial-gradient(125% 110% at 18% 12%, var(--night-glow) 0%, var(--night) 52%, var(--night-deep) 100%);
+  box-shadow: 0 30px 80px rgba(13, 14, 22, 0.4);
+  color: var(--on-night);
+}
+
+@media (min-width: 56rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 21.5rem);
+  }
+}
+
+.glow--moon {
+  top: -7.5rem;
+  right: -3.75rem;
+  width: 26.25rem;
+  height: 26.25rem;
+  background: radial-gradient(circle at 35% 35%, rgba(216, 176, 106, 0.22), transparent 62%);
+}
+
+.glow--violet {
+  bottom: -5.625rem;
+  left: 30%;
+  width: 22.5rem;
+  height: 22.5rem;
+  background: radial-gradient(circle, rgba(109, 103, 240, 0.18), transparent 65%);
+}
+
+/* The 15vw cap keeps "counts." inside a phone-width hero when the reader's text is large. */
+.hero__title {
+  margin: 0;
+  font-size: min(clamp(2.5rem, 1.6rem + 3.6vw, 3.5rem), 15vw);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.hero__lede {
+  max-width: 24em;
+  margin: 1.25rem 0 0;
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+  line-height: 1.55;
+  color: var(--on-night-2);
+  text-wrap: pretty;
+}
+
+/* A status line, not a button: no fill, no border, nothing to press, no link. */
+.hero__soon {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 2rem 0 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.hero__soon::before {
+  content: '';
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--moon);
+  box-shadow: 0 0 0 0.25rem rgba(216, 176, 106, 0.18);
+}
+
+/* The phone (screens.css) is sized from this column, at most 92% of it to leave room for
+   the tilt, so it shrinks with a narrow screen instead of overflowing it. */
+.hero__visual {
+  container-type: inline-size;
+  display: flex;
+  justify-content: center;
+  padding-block: 0.5rem;
+}
+
+/* ---------- features ---------- */
+
+.features {
+  padding: clamp(2.75rem, 2rem + 3vw, 4rem) var(--panel-pad-x);
+  border: 1px solid var(--border);
+  background: var(--feature-panel);
+  box-shadow: var(--feature-shadow);
+}
+
+.features__head {
+  max-width: 34rem;
+  margin: 0 auto clamp(2rem, 1.5rem + 2vw, 3rem);
+  text-align: center;
+}
+
+.features__head h2 {
+  margin: 0;
+  font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.375rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.features__head p {
+  max-width: 30em;
+  margin: 0.875rem auto 0;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.features__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.75rem, 1.2rem + 2vw, 2.5rem) clamp(0.75rem, 0.3rem + 2vw, 1.875rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Below 360px two screens side by side get too small to read as screens. */
+@media (max-width: 22.49rem) {
+  .features__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 62rem) {
+  .features__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Each screen is sized from its own column. */
+.feature {
+  container-type: inline-size;
+  margin: 0;
+}
+
+/* The 6vw cap keeps "underpayments" whole in a phone-width column when the reader's text
+   is large; at normal sizes it never applies. */
+.feature figcaption {
+  margin-top: 1.125rem;
+  font-size: min(0.9375rem, 6vw);
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.features__note {
+  margin: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem) 0 0;
+  font-size: 0.8125rem;
+  text-align: center;
+  color: var(--ink-3);
+}
+
+/* ---------- tagline band ---------- */
+
+.band {
+  overflow: hidden;
+  padding: clamp(3rem, 2rem + 4vw, 4.5rem) var(--panel-pad-x);
+  border: 1px solid var(--night-edge);
+  background: var(--night-panel);
+  color: var(--on-night);
+  text-align: center;
+}
+
+.glow--band {
+  top: 50%;
+  left: 50%;
+  width: 32.5rem;
+  height: 32.5rem;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(216, 176, 106, 0.1), transparent 60%);
+}
+
+.band .eyebrow {
+  margin-bottom: 1.125rem;
+}
+
+.band__title {
+  max-width: 16em;
+  margin: 0 auto;
+  font-size: clamp(1.875rem, 1.25rem + 2.6vw, 2.625rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.band__tagline {
+  margin: 1.5rem 0 0;
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--moon);
+}
+
+/* ---------- privacy and support ---------- */
+
+.help {
+  padding-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+}
+
+.help__lede {
+  margin: 0 0 1.25rem;
+  font-size: 1.0625rem;
+  color: var(--ink-2);
+}
+
+/* style.css sizes these columns to their longest word, which overflows at large text. */
+.help .cards {
+  grid-template-columns: minmax(0, 1fr);
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 40rem) {
+  .help .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.help .card h2 {
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* style.css rounds every focus ring to 4px, which would square off the card's corners. */
+.help .card:focus-visible {
+  border-radius: var(--radius);
+}
+
+.help__mail {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.help__mail a {
+  color: var(--primary);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.help__mail a:hover {
+  color: var(--primary-pressed);
+  text-decoration-thickness: 2px;
+}
+
+/* A long address must wrap rather than push the page sideways at large text sizes. */
+.help__mail a,
+.footer a {
+  overflow-wrap: anywhere;
+}
+
+/*
+ * Moonlight homepage — the app screens in the hero and the feature row.
+ *
+ * Inlined after home.css. They are drawn at the mock-up's size in design pixels: --dp is
+ * one design pixel, scaled to the space the screen is given, so a screen shrinks with a
+ * narrow window instead of overflowing it. The hero phone is drawn 300 wide, sized from
+ * .hero__visual; each feature screen 230 wide, sized from its .feature column (both are
+ * containers in home.css). Without container units (browsers before 2022) they draw at
+ * full size.
+ *
+ * Like screenshots, they keep their own colours in both themes, and each screen is one
+ * labelled image (role="img") to a screen reader.
+ */
+
+.phone {
+  --dp: 1px;
+  width: calc(300 * var(--dp));
+  overflow: hidden;
+  border: 1px solid #2c2f42;
+  border-radius: calc(42 * var(--dp));
+  background: #0d0e16;
+  box-shadow: 0 calc(40 * var(--dp)) calc(90 * var(--dp)) rgba(0, 0, 0, 0.5);
+  transform: rotate(-3deg);
+  color: #f4f4f2;
+  line-height: 1;
+}
+
+.device {
+  --dp: 1px;
+  width: calc(230 * var(--dp));
+  height: calc(286 * var(--dp));
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid var(--device-line);
+  border-radius: calc(36 * var(--dp));
+  background: var(--device-screen);
+  box-shadow: 0 calc(26 * var(--dp)) calc(60 * var(--dp)) var(--device-shadow);
+  color: var(--device-ink);
+  line-height: 1;
+}
+
+@supports (width: 1cqi) {
+  .phone {
+    --dp: calc(min(300px, 92cqi) / 300);
+  }
+
+  .device {
+    --dp: calc(min(230px, 100cqi) / 230);
+  }
+}
+
+.device--dark {
+  --device-screen: #0d0e16;
+  --device-card: #181a26;
+  --device-fill: #222536;
+  --device-line: #2c2f42;
+  --device-ink: #f4f4f2;
+  --device-ink-2: #a6a8b8;
+  --device-ink-3: #6e7185;
+  --device-shadow: rgba(0, 0, 0, 0.22);
+}
+
+.device--light {
+  --device-screen: #faf9f6;
+  --device-card: #ffffff;
+  --device-fill: #f2f1ec;
+  --device-line: #d6d3cd;
+  --device-ink: #1a1a1f;
+  --device-ink-2: #5c5c66;
+  --device-ink-3: #9a9aa3;
+  --device-shadow: rgba(0, 0, 0, 0.14);
+}
+
+.statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.phone .statusbar {
+  height: calc(44 * var(--dp));
+  padding: 0 calc(26 * var(--dp)) 0 calc(28 * var(--dp));
+  font-size: calc(13 * var(--dp));
+}
+
+.device .statusbar {
+  height: calc(38 * var(--dp));
+  padding: 0 calc(22 * var(--dp)) 0 calc(24 * var(--dp));
+  font-size: calc(11 * var(--dp));
+}
+
+.statusbar__icons {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--dp));
+}
+
+.signal {
+  display: flex;
+  align-items: flex-end;
+  gap: calc(2 * var(--dp));
+  height: calc(9 * var(--dp));
+}
+
+.signal > span {
+  width: calc(2.5 * var(--dp));
+  border-radius: calc(1 * var(--dp));
+  background: currentColor;
+}
+
+.signal > span:nth-child(1) { height: calc(4 * var(--dp)); }
+.signal > span:nth-child(2) { height: calc(6 * var(--dp)); }
+.signal > span:nth-child(3) { height: calc(8 * var(--dp)); }
+.signal > span:nth-child(4) { height: calc(9 * var(--dp)); }
+
+.battery {
+  display: flex;
+  width: calc(18 * var(--dp));
+  height: calc(9 * var(--dp));
+  padding: calc(1 * var(--dp));
+  border: 1px solid currentColor;
+  border-radius: calc(2 * var(--dp));
+}
+
+.battery > span {
+  flex: 1;
+  border-radius: calc(1 * var(--dp));
+  background: currentColor;
+}
+
+.device .battery {
+  width: calc(16 * var(--dp));
+  height: calc(8 * var(--dp));
+  padding: 0;
+}
+
+/* hero phone: app bar and home screen */
+
+.phone__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(4 * var(--dp)) calc(18 * var(--dp)) calc(12 * var(--dp));
+}
+
+.lockup {
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--dp));
+}
+
+.lockup__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(28 * var(--dp));
+  height: calc(28 * var(--dp));
+  border-radius: calc(8 * var(--dp));
+  background: radial-gradient(135% 135% at 30% 22%, #3a37a8, #14152c 68%);
+}
+
+.lockup__mark svg {
+  width: calc(16 * var(--dp));
+  height: calc(16 * var(--dp));
+}
+
+.lockup__name {
+  font-size: calc(22 * var(--dp));
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sync {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(6 * var(--dp));
+  padding: calc(5 * var(--dp)) calc(10 * var(--dp));
+  border-radius: 999px;
+  background: #222536;
+  font-size: calc(11 * var(--dp));
+  font-weight: 600;
+  color: #a6a8b8;
+}
+
+.sync__dot {
+  width: calc(6 * var(--dp));
+  height: calc(6 * var(--dp));
+  border-radius: 50%;
+  background: #3fbe86;
+}
+
+.phone__body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(11 * var(--dp));
+  padding: calc(2 * var(--dp)) calc(16 * var(--dp)) calc(22 * var(--dp));
+}
+
+.tile {
+  display: block;
+  padding: calc(16 * var(--dp));
+  border: 1px solid #2c2f42;
+  border-radius: calc(18 * var(--dp));
+  background: #181a26;
+}
+
+.tile--total {
+  padding: calc(20 * var(--dp));
+  border-radius: calc(20 * var(--dp));
+}
+
+.tile__figure {
+  display: flex;
+  align-items: baseline;
+  gap: calc(10 * var(--dp));
+  margin-top: calc(11 * var(--dp));
+}
+
+.tile--shift {
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--dp));
+  height: calc(58 * var(--dp));
+  padding: 0 calc(15 * var(--dp));
+}
+
+.shift__bar {
+  flex: none;
+  width: calc(4 * var(--dp));
+  height: calc(32 * var(--dp));
+  border-radius: calc(2 * var(--dp));
+  background: #5b6cf0;
+}
+
+.shift__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.shift__name {
+  font-size: calc(14 * var(--dp));
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.shift__where {
+  font-size: calc(11 * var(--dp));
+  line-height: 1.2;
+  color: #6e7185;
+}
+
+/* shared screen parts */
+
+.label {
+  display: block;
+  font-size: calc(10 * var(--dp));
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6e7185;
+}
+
+.label--tint { color: #4f46e5; }
+.label--muted { color: var(--device-ink-3); }
+
+.money {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.money--total {
+  font-size: calc(38 * var(--dp));
+  letter-spacing: -0.025em;
+}
+
+.money--row {
+  font-size: calc(15 * var(--dp));
+  letter-spacing: 0;
+}
+
+.delta {
+  display: inline-flex;
+  align-items: center;
+  padding: calc(4 * var(--dp)) calc(8 * var(--dp));
+  border-radius: 999px;
+  background: rgba(63, 190, 134, 0.16);
+  font-size: calc(11 * var(--dp));
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #3fbe86;
+  white-space: nowrap;
+}
+
+.delta--small { font-size: calc(10 * var(--dp)); }
+
+.tile__head,
+.ui-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(8 * var(--dp));
+}
+
+.pace {
+  display: block;
+  position: relative;
+  height: calc(9 * var(--dp));
+  margin-top: calc(12 * var(--dp));
+  border-radius: 999px;
+  background: #222536;
+}
+
+.pace__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 53%;
+  border-radius: 999px;
+  background: #d8b06a;
+}
+
+.pace__mark {
+  position: absolute;
+  top: calc(-3 * var(--dp));
+  bottom: calc(-3 * var(--dp));
+  left: 47%;
+  width: calc(2 * var(--dp));
+  border-radius: calc(2 * var(--dp));
+  background: #f4f4f2;
+}
+
+.dot {
+  flex: none;
+  width: calc(7 * var(--dp));
+  height: calc(7 * var(--dp));
+  border-radius: 50%;
+}
+
+.dot--indigo { background: #5b6cf0; }
+.dot--teal { background: #2bb3a3; }
+.dot--coral { background: #e8744b; }
+
+/* feature screens */
+
+.device__body {
+  display: block;
+  padding: calc(6 * var(--dp)) calc(14 * var(--dp)) calc(18 * var(--dp));
+}
+
+.device__title {
+  display: block;
+  padding: 0 calc(2 * var(--dp)) calc(12 * var(--dp));
+  font-size: calc(17 * var(--dp));
+  font-weight: 700;
+}
+
+.ui-card {
+  display: block;
+  padding: calc(16 * var(--dp));
+  border: 1px solid var(--device-line);
+  border-radius: calc(16 * var(--dp));
+  background: var(--device-card);
+}
+
+.ui-card--live {
+  border-color: rgba(79, 70, 229, 0.2);
+  box-shadow: 0 calc(6 * var(--dp)) calc(18 * var(--dp)) rgba(79, 70, 229, 0.1);
+}
+
+.ui-card--plain {
+  border-color: transparent;
+  box-shadow: 0 calc(6 * var(--dp)) calc(18 * var(--dp)) rgba(0, 0, 0, 0.05);
+}
+
+.ui-card__figure {
+  display: flex;
+  align-items: baseline;
+  gap: calc(7 * var(--dp));
+  margin-top: calc(11 * var(--dp));
+}
+
+.ui-card__of {
+  font-size: calc(12 * var(--dp));
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--device-ink-3);
+}
+
+.ui-card__title {
+  display: block;
+  margin-bottom: calc(14 * var(--dp));
+  font-size: calc(16 * var(--dp));
+  font-weight: 600;
+}
+
+.ui-card__note {
+  display: block;
+  margin-top: calc(4 * var(--dp));
+  font-size: calc(11 * var(--dp));
+  color: var(--device-ink-3);
+}
+
+.money--goal { font-size: calc(26 * var(--dp)); }
+
+.money--live {
+  display: block;
+  margin-top: calc(8 * var(--dp));
+  font-size: calc(32 * var(--dp));
+}
+
+.money--overdue {
+  display: block;
+  margin-top: calc(8 * var(--dp));
+  font-size: calc(28 * var(--dp));
+  color: #c2543c;
+}
+
+.trend {
+  display: block;
+  width: 100%;
+  height: calc(56 * var(--dp));
+  margin-top: calc(12 * var(--dp));
+}
+
+.chips {
+  display: flex;
+  gap: calc(6 * var(--dp));
+  margin-top: calc(10 * var(--dp));
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(5 * var(--dp));
+  height: calc(30 * var(--dp));
+  padding: 0 calc(11 * var(--dp));
+  border-radius: 999px;
+  background: var(--device-fill);
+  font-size: calc(11 * var(--dp));
+  font-weight: 600;
+  color: var(--device-ink-2);
+}
+
+.chip--on {
+  background: rgba(79, 70, 229, 0.1);
+  box-shadow: inset 0 0 0 calc(1.5 * var(--dp)) #4f46e5;
+  color: var(--device-ink);
+}
+
+.breakdown {
+  display: flex;
+  align-items: center;
+  gap: calc(14 * var(--dp));
+}
+
+.donut {
+  flex: none;
+  position: relative;
+  width: calc(74 * var(--dp));
+  height: calc(74 * var(--dp));
+  border-radius: 50%;
+  background: conic-gradient(#5b6cf0 0 41%, #2bb3a3 41% 68%, #e8744b 68% 87%, #e0a23b 87% 100%);
+}
+
+.donut::after {
+  content: '';
+  position: absolute;
+  inset: calc(22 * var(--dp));
+  border-radius: 50%;
+  background: var(--device-card);
+}
+
+.legend {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: calc(7 * var(--dp));
+  min-width: 0;
+}
+
+.legend__row {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--dp));
+  font-size: calc(11 * var(--dp));
+}
+
+.legend__name { flex: 1; }
+
+.legend__value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.owed {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--dp));
+  margin-top: calc(12 * var(--dp));
+}
+
+.owed__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(8 * var(--dp));
+}
+
+.owed__status {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(4 * var(--dp));
+  font-size: calc(11 * var(--dp));
+  font-weight: 600;
+  color: var(--device-ink-3);
+}
+
+.owed__status--short { color: #c2543c; }
+
+.owed__amount {
+  font-size: calc(12 * var(--dp));
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dot--short,
+.dot--ring {
+  width: calc(6 * var(--dp));
+  height: calc(6 * var(--dp));
+}
+
+.dot--short { background: #c2543c; }
+.dot--ring { border: calc(1.5 * var(--dp)) solid currentColor; }
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="masthead">
   <div class="wrap masthead__inner">
-    <a class="brand" href="/">
+    <a class="brand" href="/" aria-current="page">
       <span class="brand__mark" aria-hidden="true">M</span>
       <span class="brand__name">Moonlight</span>
     </a>
@@ -511,10 +1408,142 @@ a:focus-visible {
     </nav>
   </div>
 </header>
-<main id="main" class="wrap layout">
-  <article class="doc">
-    <h1>Moonlight</h1>
-    <p class="lede">A shift and income tracker for clinicians. It works offline, and signing in to sync is optional.</p>
+<main id="main" class="wrap home">
+  <section class="panel hero" aria-labelledby="hero-title">
+    <div class="glow glow--moon" aria-hidden="true"></div>
+    <div class="glow glow--violet" aria-hidden="true"></div>
+    <div class="hero__copy">
+      <p class="eyebrow">Shift pay &amp; income tracker</p>
+      <h1 id="hero-title" class="hero__title">Every shift<br> counts.</h1>
+      <p class="hero__lede">Track call, moonlighting, and per-diem income across every employer — and watch it add up.</p>
+      <p class="hero__soon">Coming soon to the App Store</p>
+    </div>
+    <div class="hero__visual">
+      <div class="phone" role="img" aria-label="Moonlight’s home screen on an iPhone, with sample data: $11,840 earned this month, up 8%; a Kitchen reno goal, ahead of pace; and a $1,600 Night Call shift at Mercy General.">
+        <div class="statusbar">
+          <span>9:41</span>
+          <span class="statusbar__icons"><span class="signal"><span></span><span></span><span></span><span></span></span><span class="battery"><span></span></span></span>
+        </div>
+        <div class="phone__bar">
+          <span class="lockup">
+            <span class="lockup__mark"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="phone-mark-ink" x1="0.15" y1="0.1" x2="0.8" y2="0.95"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.4" stop-color="#F4F1E6"/><stop offset="0.66" stop-color="#9A93C8"/><stop offset="1" stop-color="#5B55A6"/></linearGradient></defs><path d="M16 84 V20 L50 70 L84 20 V84" fill="none" stroke="url(#phone-mark-ink)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="lockup__name">Moonlight</span>
+          </span>
+          <span class="sync"><span class="sync__dot"></span>Synced</span>
+        </div>
+        <div class="phone__body">
+          <div class="tile tile--total">
+            <span class="label">This month</span>
+            <span class="tile__figure"><span class="money money--total">$11,840</span><span class="delta">▲ 8%</span></span>
+          </div>
+          <div class="tile tile--goal">
+            <span class="tile__head"><span class="label">Kitchen reno</span><span class="delta delta--small">▲ ahead</span></span>
+            <span class="pace"><span class="pace__fill"></span><span class="pace__mark"></span></span>
+          </div>
+          <div class="tile tile--shift">
+            <span class="shift__bar"></span>
+            <span class="shift__text"><span class="shift__name">Night Call</span><span class="shift__where">Mercy General</span></span>
+            <span class="money money--row">$1,600</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel features" aria-labelledby="features-title">
+    <div class="features__head">
+      <h2 id="features-title">Built for how you actually work</h2>
+      <p>Log it, plan it, reconcile it — and chase a goal. Money stays the hero on every screen.</p>
+    </div>
+    <ul class="features__grid" role="list">
+      <li>
+        <figure class="feature">
+          <div class="device device--dark" role="img" aria-label="The Goal pace screen, with sample data: a Kitchen reno goal at $32,000 of $60,000, $3,800 ahead of pace, charted against the pace line.">
+            <div class="statusbar"><span>9:41</span><span class="battery"></span></div>
+            <div class="device__body">
+              <span class="device__title">Goal pace</span>
+              <div class="ui-card">
+                <span class="ui-card__head"><span class="label">Kitchen reno</span><span class="delta delta--small">▲ $3,800</span></span>
+                <span class="ui-card__figure"><span class="money money--goal">$32,000</span><span class="ui-card__of">of $60k</span></span>
+                <span class="pace"><span class="pace__fill"></span><span class="pace__mark"></span></span>
+                <svg class="trend" viewBox="0 0 186 56" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="48" x2="186" y2="6" stroke="#6E7185" stroke-width="1.5" stroke-dasharray="4 4"/><path d="M0 48 L96 26 L96 36 L0 48 Z" fill="rgba(63,190,134,0.16)"/><polyline points="0,48 32,40 64,32 96,26" fill="none" stroke="#D8B06A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="96" y1="26" x2="186" y2="4" stroke="#D8B06A" stroke-width="2" stroke-dasharray="2 4" stroke-linecap="round" opacity="0.6"/><circle cx="96" cy="26" r="3.5" fill="#D8B06A" stroke="#181A26" stroke-width="2"/></svg>
+              </div>
+            </div>
+          </div>
+          <figcaption>Stay ahead of pace</figcaption>
+        </figure>
+      </li>
+      <li>
+        <figure class="feature">
+          <div class="device device--light" role="img" aria-label="The Log shift screen, with sample data: live earnings of $1,600 for 12 hours at $133 an hour, with the Night shift type chosen.">
+            <div class="statusbar"><span>9:41</span><span class="battery"></span></div>
+            <div class="device__body">
+              <span class="device__title">Log shift</span>
+              <div class="ui-card ui-card--live">
+                <span class="label label--tint">Live earnings</span>
+                <span class="money money--live">$1,600</span>
+                <span class="ui-card__note">12 hr · $133/hr</span>
+              </div>
+              <span class="chips"><span class="chip chip--on"><span class="dot dot--indigo"></span>Night</span><span class="chip"><span class="dot dot--teal"></span>ICU</span></span>
+            </div>
+          </div>
+          <figcaption>Log in seconds</figcaption>
+        </figure>
+      </li>
+      <li>
+        <figure class="feature">
+          <div class="device device--dark" role="img" aria-label="The Reports screen, with sample data: earnings by shift type, $4,800 Night, $3,200 ICU and $2,200 ED.">
+            <div class="statusbar"><span>9:41</span><span class="battery"></span></div>
+            <div class="device__body">
+              <span class="device__title">Reports</span>
+              <div class="ui-card">
+                <span class="ui-card__title">By type</span>
+                <span class="breakdown">
+                  <span class="donut"></span>
+                  <span class="legend">
+                    <span class="legend__row"><span class="dot dot--indigo"></span><span class="legend__name">Night</span><span class="legend__value">$4.8k</span></span>
+                    <span class="legend__row"><span class="dot dot--teal"></span><span class="legend__name">ICU</span><span class="legend__value">$3.2k</span></span>
+                    <span class="legend__row"><span class="dot dot--coral"></span><span class="legend__name">ED</span><span class="legend__value">$2.2k</span></span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <figcaption>See where it comes from</figcaption>
+        </figure>
+      </li>
+      <li>
+        <figure class="feature">
+          <div class="device device--light" role="img" aria-label="The Pay reconciliation screen, with sample data: $2,400 overdue, of which $400 was paid short and $2,000 is unpaid.">
+            <div class="statusbar"><span>9:41</span><span class="battery"></span></div>
+            <div class="device__body">
+              <span class="device__title">Pay reconciliation</span>
+              <div class="ui-card ui-card--plain">
+                <span class="label label--muted">Overdue</span>
+                <span class="money money--overdue">$2,400</span>
+                <span class="owed">
+                  <span class="owed__row"><span class="owed__status owed__status--short"><span class="dot dot--short"></span>Paid short</span><span class="owed__amount">−$400</span></span>
+                  <span class="owed__row"><span class="owed__status"><span class="dot dot--ring"></span>Unpaid</span><span class="owed__amount">$2,000</span></span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <figcaption>Catch underpayments</figcaption>
+        </figure>
+      </li>
+    </ul>
+    <p class="features__note">Screens show sample data.</p>
+  </section>
+
+  <section class="panel band" aria-labelledby="band-title">
+    <div class="glow glow--band" aria-hidden="true"></div>
+    <p class="eyebrow">For the doctors who never clock out</p>
+    <h2 id="band-title" class="band__title">Your nights are worth more than you think.</h2>
+    <p class="band__tagline">Moonlight keeps count.</p>
+  </section>
+
+  <section class="help" aria-label="Privacy and support">
+    <p class="help__lede">Moonlight works offline, and signing in to sync is optional.</p>
     <div class="cards">
       <a class="card" href="/privacy">
         <h2>Privacy Policy</h2>
@@ -527,8 +1556,8 @@ a:focus-visible {
         <span class="card__go">Get help</span>
       </a>
     </div>
-    <p>Still stuck? Email <a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a> with your iOS version, iPhone model, and what happened.</p>
-  </article>
+    <p class="help__mail">Questions? Email <a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a>.</p>
+  </section>
 </main>
 <footer class="footer">
   <div class="wrap">
