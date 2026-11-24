@@ -516,7 +516,7 @@ a:focus-visible {
     <h1>Moonlight — Privacy Policy</h1>
     <p><strong>Last updated: 24 November 2026</strong></p>
     <p>Moonlight is a shift and income tracker for clinicians. This policy explains exactly what the app stores, what leaves your device, and what never does.</p>
-    <p>The short version: Moonlight works entirely offline and keeps your data on your iPhone. An account is optional. If you sign in, most of your data is copied to your private account so it can be restored on another phone; if you don't, nothing is sent to us at all. We do not use advertising or tracking of any kind, and the app doesn't report how you use it, with one exception: RevenueCat, which confirms Moonlight Pro subscriptions. Once Pro is on sale, the app checks with it each time it opens, and Apple's privacy label counts its subscription records as analytics (section 5).</p>
+    <p>The short version: Moonlight works entirely offline and keeps your data on your iPhone. An account is optional. If you sign in, most of your data is copied to your private account so it can be restored on another phone; if you don't, nothing is sent to us at all. We do not use advertising or tracking of any kind, and the app doesn't report how you use it. Apple's privacy label lists purchase history and analytics only because the app contains RevenueCat's in-app purchase software, which this version never turns on (section 9).</p>
     <hr>
     <section aria-labelledby="1-who-we-are">
     <h2 id="1-who-we-are">1. Who we are</h2>
@@ -537,7 +537,7 @@ a:focus-visible {
     </section>
     <section aria-labelledby="3-what-leaves-your-device-if-you-sign-in">
     <h2 id="3-what-leaves-your-device-if-you-sign-in">3. What leaves your device if you sign in</h2>
-    <p>Signing in is optional, and until you do, <strong>nothing is sent to us</strong> (RevenueCat, which confirms Moonlight Pro subscriptions once Pro is on sale, is covered in section 5). If you create an account, the following is copied to our cloud database so it can be restored on another device, and kept up to date while you stay signed in:</p>
+    <p>Signing in is optional, and until you do, <strong>nothing is sent to us</strong>. If you create an account, the following is copied to our cloud database so it can be restored on another device, and kept up to date while you stay signed in:</p>
     <ul>
       <li><strong>Shifts</strong> — dates, times, breaks, amounts, override reasons, paid amounts and dates, and <strong>your notes</strong>.</li>
       <li><strong>Workplaces</strong> — name, pay details, schedule and paydays, and any contact name, email, phone or address you entered for that workplace.</li>
@@ -553,7 +553,6 @@ a:focus-visible {
       <li><strong>Credentials and CME records</strong> — including <strong>DEA numbers, medical licence numbers</strong>, certification details and their notes.</li>
       <li><strong>Connected schedule links</strong> — the feed address often contains a private token that grants access to your schedule, so it is never uploaded to your account.</li>
       <li><strong>Your Apple Calendar connection</strong> — which calendar you mirror shifts into, and whether amounts are included.</li>
-      <li><strong>Purchase entitlement</strong> — whether you have Moonlight Pro comes from the App Store, through RevenueCat (section 5), never from our database.</li>
     </ul>
     <p>Because these are never uploaded, signing in on a new phone does not bring them back. Only an iPhone backup does (section 8).</p>
     <h3 id="about-notes-please-read">⚠️ About notes — please read</h3>
@@ -569,9 +568,6 @@ a:focus-visible {
     <h2 id="5-who-processes-your-data">5. Who processes your data</h2>
     <p>We use Supabase (<a href="https://supabase.com">https://supabase.com</a>) to host the database and handle sign-in. Your account data is stored in the United States. Supabase acts as our processor and does not use your data for its own purposes.</p>
     <p>Every row in the database is protected by row-level security: the database itself enforces that only your own account can read or write your data, not just the app.</p>
-    <p>Moonlight Pro subscriptions go through the App Store: Apple takes the payment, and we use RevenueCat (<a href="https://www.revenuecat.com">https://www.revenuecat.com</a>) to confirm a subscription is active. Once Pro is on sale, the app checks with RevenueCat each time it opens, whether or not you subscribe. Each check sends an identifier (below), your device model, your App Store country and preferred languages, and a device identifier Apple gives our apps on your phone, and, like any web request, your device's IP address. RevenueCat is also told whether you allow apps to ask to track you (Moonlight never asks). It keeps a record for each identifier the app uses with it, not only for subscribers: when it was first and last seen, the app and iOS version it last saw, your language, and the country worked out from your IP address (RevenueCat says it doesn't keep the address itself).</p>
-    <p>The identifier is never your email address: it is your account's ID while your account's data is on the phone, even after you sign out, and otherwise a random one. After your data leaves the phone, or another account's replaces it, your account's ID can still be sent for a while: until the phone has switched identifiers and has sent anything it had queued under the old one, which can need a connection to RevenueCat. A switch to another account's ID sends both IDs in one request.</p>
-    <p>When you buy, restore or renew a subscription, RevenueCat receives your App Store purchase history for Moonlight, and it can also hear about your subscription directly from Apple. It keeps your subscription history: trials, renewals, cancellations and refunds. Apple's privacy label lists these records as analytics. RevenueCat never receives your shifts, notes, or anything else you enter. It processes all of this for us, in the United States. Under its terms it doesn't sell it, and it uses it to provide its service to us, to improve that service and to protect against fraud, and as the law requires. It keeps these records until they are deleted, with your account (section 10) or when we stop using RevenueCat. Moonlight Pro isn't on sale yet, and until it is the app doesn't contact RevenueCat at all.</p>
     </section>
     <section aria-labelledby="6-the-other-connections-the-app-makes">
     <h2 id="6-the-other-connections-the-app-makes">6. The other connections the app makes</h2>
@@ -594,7 +590,7 @@ a:focus-visible {
     <section aria-labelledby="9-what-we-do-not-do">
     <h2 id="9-what-we-do-not-do">9. What we do not do</h2>
     <ul>
-      <li><strong>No usage reporting.</strong> Apart from RevenueCat, for subscriptions (section 5), the app has no SDK that reports on how you use it: no telemetry and no crash reporting. RevenueCat's subscription records are the one thing Apple's privacy label counts as analytics.</li>
+      <li><strong>No usage reporting.</strong> The app has no SDK that reports on how you use it: no telemetry and no crash reporting. It does contain RevenueCat's in-app purchase software (<a href="https://www.revenuecat.com">https://www.revenuecat.com</a>), but this version sells nothing and never turns it on, so it sends RevenueCat nothing. Apple's privacy label still lists purchase history, and analytics as a use of it and of your user ID, because that software is in the app.</li>
       <li><strong>No advertising</strong>, no ad identifiers, no ad networks.</li>
       <li><strong>No tracking.</strong> We do not track you across other apps or websites, and we do not share, sell, or broker your data with anyone.</li>
       <li><strong>No crash reporting service</strong>, no profiling, and no automated decision-making.</li>
@@ -603,16 +599,14 @@ a:focus-visible {
     <section aria-labelledby="10-deleting-your-data">
     <h2 id="10-deleting-your-data">10. Deleting your data</h2>
     <ul>
-      <li><strong>Delete your account</strong> — in the app, under Settings → Account &amp; sync. This permanently deletes your account and everything synced to it, asks RevenueCat to delete its record under your account's ID, and removes Moonlight's data from that phone, including the credential and CME records that were never uploaded. It cannot be undone. Another phone that still has your account's data keeps using that ID with RevenueCat, which can start a new record under it, until you remove the data there too (below).</li>
+      <li><strong>Delete your account</strong> — in the app, under Settings → Account &amp; sync. This permanently deletes your account and everything synced to it, and removes Moonlight's data from that phone, including the credential and CME records that were never uploaded. It cannot be undone. Another phone that still has your account's data keeps it until you remove the data there too (below).</li>
       <li><strong>Remove data from one phone</strong> — Settings → Account &amp; sync → Sign out &amp; remove data. This clears everything stored on that phone, including credential and CME records, and leaves your account as it is. On a phone already signed out that still holds an account's data, the same screen offers Remove data from this phone.</li>
       <li>Both, and switching the phone to another account, also delete the shift events that phone added to your Apple Calendar, if Moonlight still has access to the calendar.</li>
       <li><strong>Ordinary sign-out</strong> leaves your data on the phone so you can sign back in.</li>
       <li><strong>Deleting a single record</strong> — deleting a shift, scheduled shift, expense, goal, paycheck flag, credential or CME record erases the text you typed on it (its notes, a goal's label, a CME's title, a credential's numbers and issuer) from the phone, and from your account if it had synced there. The record itself stays, marked deleted, with its dates and amounts, so your other devices remove it too. A deleted credential keeps its name, and a deleted shift type or employer keeps its name because the shifts that used it still show it; an employer's contact details are erased.</li>
       <li><strong>Not signed in</strong> — delete the app to remove its database and everything in it. If an iPhone backup includes Moonlight, delete or replace that backup too.</li>
-      <li><strong>RevenueCat's records under a random ID</strong> — once Pro is on sale, a phone uses a random ID with RevenueCat until an account's data is on it, and a new one after that data is removed. Those records are tied to no account, so deleting an account doesn't delete them, and nothing we hold connects them to you. Deleting the app stops it sending them anything; if you subscribed under one, Apple can still tell RevenueCat about that subscription until it ends.</li>
     </ul>
-    <p>When you delete your account, your synced data is removed immediately by the database itself, and RevenueCat is asked to delete its record of your account, which it then does on its side, keeping only what its own retention policy requires; we keep no separate copy. If RevenueCat can't take that request at the time, your account is deleted anyway, and we keep only its ID, with when it was deleted and how our last request went, to ask RevenueCat again each day until it has the request; then that record is deleted too. Our hosting provider's routine infrastructure backups, if any, rotate out within 7 days. We keep your data for as long as your account exists and do not retain it after deletion, apart from that record while RevenueCat's deletion is pending.</p>
-    <p>Deleting your account doesn't cancel a Moonlight Pro subscription. Apple bills it, so cancel it in the iOS Settings app → your name → Subscriptions.</p>
+    <p>When you delete your account, your synced data is removed immediately by the database itself; we keep no separate copy. Our hosting provider's routine infrastructure backups, if any, rotate out within 7 days. We keep your data for as long as your account exists and do not retain it after deletion.</p>
     </section>
     <section aria-labelledby="11-security">
     <h2 id="11-security">11. Security</h2>
@@ -630,7 +624,7 @@ a:focus-visible {
     </section>
     <section aria-labelledby="13-your-rights">
     <h2 id="13-your-rights">13. Your rights</h2>
-    <p>Depending on where you live, you may have rights to access, correct, export or delete your data. Moonlight gives you all of these directly in the app: your data is visible and editable throughout, exportable from Settings → Export data, and deletable as described above, RevenueCat's record of your account included. For anything else, contact us at <strong><a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a></strong>.</p>
+    <p>Depending on where you live, you may have rights to access, correct, export or delete your data. Moonlight gives you all of these directly in the app: your data is visible and editable throughout, exportable from Settings → Export data, and deletable as described above. For anything else, contact us at <strong><a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a></strong>.</p>
     </section>
     <section aria-labelledby="14-changes-to-this-policy">
     <h2 id="14-changes-to-this-policy">14. Changes to this policy</h2>
