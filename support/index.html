@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moonlight — Support — Moonlight</title>
+<meta name="description" content="Help for Moonlight — common questions, timer, reminders, schedules, exports.">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap">
+<style>/*
+ * Moonlight document site.
+ *
+ * The palette and type are lifted from src/theme/tokens.ts so the pages read as part of
+ * the app rather than a stranger's website — a clinician tapping Settings → Privacy
+ * Policy should land somewhere that plainly belongs to the same product. Warm alabaster
+ * ground, deep ink, indigo for action, champagne-bronze used sparingly as a marker.
+ *
+ * The layout is a reading column with a contents rail, not a marketing page: these are
+ * documents, and the job is legibility at a 60–70 character measure on a phone held in
+ * one hand.
+ */
+
+:root {
+  /* Surfaces & ink — neutralLight in tokens.ts */
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface-2: #f2f1ec;
+  --border: #e7e5df;
+  --ink: #1a1a1f;
+  --ink-2: #5c5c66;
+  --ink-3: #696971; /* documented AA on all three surfaces */
+
+  /* Brand — brandLight */
+  --primary: #4f46e5;
+  --primary-pressed: #3f38c4;
+  --primary-tint: rgba(79, 70, 229, 0.1);
+  --accent: #c79a53;
+  --warning-bg: rgba(199, 154, 83, 0.1);
+
+  --measure: 68ch;
+  --rail: 15rem;
+
+  --text-body: clamp(1rem, 0.97rem + 0.16vw, 1.0625rem);
+  --text-h1: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
+  --text-h2: clamp(1.3rem, 1.15rem + 0.7vw, 1.6rem);
+  --text-h3: clamp(1.05rem, 1rem + 0.25vw, 1.15rem);
+
+  --space-section: clamp(2.5rem, 2rem + 2vw, 4rem);
+  --radius: 14px;
+
+  --duration: 160ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* neutralDark + brandDark */
+    --bg: #0d0e16;
+    --surface: #181a26;
+    --surface-2: #222536;
+    --border: #2c2f42;
+    --ink: #f4f4f2;
+    --ink-2: #a6a8b8;
+    --ink-3: #8e91a3; /* lifted from token ink3rd for AA on the darker ground */
+    --primary: #8b86f4; /* lifted from brandDark primary — 4.5:1 on #0D0E16 */
+    --primary-pressed: #a29ef7;
+    --primary-tint: rgba(109, 103, 240, 0.16);
+    --accent: #d8b06a;
+    --warning-bg: rgba(216, 176, 106, 0.12);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--text-body);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.wrap {
+  width: min(100% - 2.5rem, 74rem);
+  margin-inline: auto;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--primary);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 var(--radius) 0;
+  z-index: 10;
+}
+.skip:focus {
+  left: 0;
+}
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(1.6) blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.masthead__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.75rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 8px;
+  background: linear-gradient(150deg, #4f46e5, #201d63);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+}
+
+.brand__name {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.masthead nav {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.masthead nav a {
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+}
+
+.masthead nav a:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+
+.masthead nav a[aria-current='page'] {
+  color: var(--primary);
+  background: var(--primary-tint);
+}
+
+/* ---------- layout ---------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-block: var(--space-section) calc(var(--space-section) * 1.2);
+  align-items: start;
+}
+
+@media (min-width: 62rem) {
+  .layout:has(.rail) {
+    grid-template-columns: minmax(0, 1fr) var(--rail);
+  }
+}
+
+.doc {
+  max-width: var(--measure);
+}
+
+/* ---------- document type ---------- */
+
+.doc h1 {
+  font-size: var(--text-h1);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  margin: 0 0 1.25rem;
+  text-wrap: balance;
+}
+
+.lede {
+  font-size: 1.2em;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin: 0 0 2rem;
+  max-width: 46ch;
+}
+
+.doc h2 {
+  font-size: var(--text-h2);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: var(--space-section) 0 0.85rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  text-wrap: balance;
+}
+
+/* The champagne marker is the one decorative flourish, and it earns its place by
+   making section starts scannable in a 300-line support document. */
+.doc h2::before {
+  content: '';
+  display: block;
+  width: 1.75rem;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.doc h3 {
+  font-size: var(--text-h3);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin: 2rem 0 0.5rem;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.doc p {
+  margin: 0 0 1.05rem;
+}
+
+.doc strong {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.doc em {
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.doc ul {
+  margin: 0 0 1.15rem;
+  padding-left: 0;
+  list-style: none;
+}
+
+.doc li {
+  position: relative;
+  padding-left: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.doc li::before {
+  content: '';
+  position: absolute;
+  left: 0.25rem;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.doc hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: var(--space-section) 0;
+}
+
+/* The h2 already draws its own rule; a bare <hr> immediately before one doubles it. */
+.doc hr + h2 {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.doc a {
+  color: var(--primary);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+.doc a:hover {
+  color: var(--primary-pressed);
+  text-decoration-thickness: 2px;
+}
+
+/* The "please read first" section carries a ⚠️ in its heading. Give the WHOLE
+   section a surface — semantic colour, not decoration: it is the one thing on the
+   support page a user must not skim past. Styling the heading alone left the card
+   ending mid-section, which reads as a rendering fault rather than emphasis. */
+.doc .callout {
+  background: var(--warning-bg);
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.4rem 0.5rem;
+  margin-top: var(--space-section);
+}
+
+.doc .callout h2 {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.doc .callout h2::before {
+  display: none;
+}
+
+.doc .callout > :last-child {
+  margin-bottom: 1rem;
+}
+
+/* ---------- contents rail ---------- */
+
+.rail {
+  display: none;
+}
+
+@media (min-width: 62rem) {
+  .rail {
+    display: block;
+    position: sticky;
+    top: 5.5rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+}
+
+.rail__title {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.rail ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-left: 1px solid var(--border);
+}
+
+.rail li {
+  margin: 0;
+}
+
+.rail a {
+  display: block;
+  padding: 0.4rem 0 0.4rem 0.9rem;
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+
+.rail a:hover {
+  color: var(--ink);
+  border-left-color: var(--accent);
+}
+
+/* ---------- hub cards ---------- */
+
+.cards {
+  display: grid;
+  gap: 1rem;
+  margin: 0 0 2rem;
+}
+
+@media (min-width: 40rem) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  display: block;
+  padding: 1.6rem 1.5rem 1.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+}
+
+.card h2 {
+  margin: 0 0 0.5rem;
+  border: 0;
+  padding: 0;
+  font-size: 1.25rem;
+}
+
+.card h2::before {
+  display: none;
+}
+
+.card p {
+  margin: 0 0 0.9rem;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+}
+
+.card__go {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--primary);
+}
+
+.card:hover .card__go::after {
+  transform: translateX(3px);
+}
+
+.card__go::after {
+  content: '→';
+  display: inline-block;
+  margin-left: 0.35rem;
+  transition: transform var(--duration) var(--ease);
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+  border-top: 1px solid var(--border);
+  padding-block: 2rem 3rem;
+  color: var(--ink-3);
+  font-size: 0.9375rem;
+}
+
+.footer p {
+  margin: 0 0 0.35rem;
+}
+
+.footer a {
+  color: var(--primary);
+}
+
+/* ---------- focus ---------- */
+
+a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="masthead">
+  <div class="wrap masthead__inner">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">M</span>
+      <span class="brand__name">Moonlight</span>
+    </a>
+    <nav aria-label="Documents">
+      <a href="/privacy">Privacy</a>
+      <a href="/support" aria-current="page">Support</a>
+    </nav>
+  </div>
+</header>
+<main id="main" class="wrap layout">
+  <article class="doc">
+    <h1>Moonlight — Support</h1>
+    <p>Moonlight is a shift and income tracker for physicians and other shift workers. Published by <strong>October Fourteen LLC</strong>.</p>
+    <p><strong>Contact us:</strong> <a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a> — we read every message and usually reply within a couple of days.</p>
+    <p>When you write in, it helps to include your iOS version, your iPhone model, and what you tapped just before the problem appeared.</p>
+    <p><strong>Requirements:</strong> iPhone running iOS 16.4 or later. Moonlight is designed for iPhone; it runs on iPad in compatibility mode but isn't laid out for the larger screen.</p>
+    <hr>
+    <section class="callout" aria-labelledby="please-read-first-where-your-data-lives">
+    <h2 id="please-read-first-where-your-data-lives">⚠️ Please read first: where your data lives</h2>
+    <p>Everything you enter is stored in the app on your iPhone, and Moonlight works fully offline. <strong>Signing in is optional.</strong> It copies most of your data to your private account so you can restore it on a new or replaced phone. Credentials, CME records, connected schedule links and your Apple Calendar choice never upload — only an iPhone backup carries those.</p>
+    <p>If you don't sign in, Moonlight sends nothing to us, and <strong>we cannot recover your data for you</strong>. If you delete the app, lose your phone, or set up a new phone without restoring an iPhone backup, your records are gone.</p>
+    <p>Three things protect you:</p>
+    <ul>
+      <li><strong>An account.</strong> Settings → Account &amp; sync → Sign in. See "Account &amp; sync" below.</li>
+      <li><strong>iPhone backups.</strong> An encrypted iCloud or Finder backup includes all of Moonlight's data, credentials and CME included, and restores it with the app. Check that iCloud Backup is on in iOS Settings.</li>
+      <li><strong>Export a CSV.</strong> Settings → Export data → Shifts (and Expenses). Email the files to yourself or drop them in iCloud Drive, then Settings → Import from CSV on the new phone, once for each file.</li>
+    </ul>
+    </section>
+    <section aria-labelledby="what-moonlight-does">
+    <h2 id="what-moonlight-does">What Moonlight does</h2>
+    <ul>
+      <li><strong>Log shifts</strong> with six pay structures — flat fee, hourly, capped hourly, tiered hourly, base fee + hourly, and day rate. Overnight and multi-day shifts are handled properly.</li>
+      <li><strong>Run a live timer</strong> with a Lock Screen Live Activity, breaks, and a confirm step before anything is saved.</li>
+      <li><strong>Schedule shifts</strong> ahead, repeat them weekly, and see them on a calendar or list.</li>
+      <li><strong>Import your schedule</strong> from Amion, QGenda or any iCal link.</li>
+      <li><strong>Track what you're owed</strong> — mark paychecks paid, catch underpayments and unpaid shifts.</li>
+      <li><strong>Expenses, mileage and deductions</strong>, with a 1099 summary and period reports as PDFs.</li>
+      <li><strong>Income goals</strong> with pace tracking.</li>
+      <li><strong>Credentials and CME</strong> — licence, DEA and certification expiry reminders.</li>
+      <li><strong>Home Screen and Lock Screen widgets</strong>, and reminders before and after each shift.</li>
+    </ul>
+    </section>
+    <section aria-labelledby="common-questions">
+    <h2 id="common-questions">Common questions</h2>
+    <h3 id="i-logged-a-shift-but-my-total-didnt-go-up">"I logged a shift but my total didn't go up"</h3>
+    <p>You most likely <strong>scheduled</strong> it rather than logged it. If you pick a date in the future, the button changes from <em>Log shift</em> to <em>Schedule shift</em> — that plans the shift but doesn't count it as earnings until it actually happens.</p>
+    <p>This catches people who open the app at the <em>start</em> of a night shift. Log it when the shift is done, or plan it now and log it afterwards.</p>
+    <p>The date is the first thing on the form, with <strong>Today</strong> and <strong>Yesterday</strong> one tap apart — worth a glance when you log a night shift the morning after. The form opens on your last shift's employer and type, so a repeat shift is just the plus button and <strong>Save</strong>.</p>
+    <h3 id="i-changed-my-pay-rate-and-old-shifts-still-show-the-old-amount">"I changed my pay rate and old shifts still show the old amount"</h3>
+    <p>That's deliberate. Each shift stores a snapshot of the pay rules that applied when you logged it, so editing a shift type never silently rewrites your pay history — which matters if you're checking old payslips.</p>
+    <p>To change a shift that's already logged, open it and use <strong>Enter amount manually</strong>.</p>
+    <h3 id="my-overnight-shift-is-on-the-wrong-day">"My overnight shift is on the wrong day"</h3>
+    <p>An overnight shift counts entirely on the day it <strong>starts</strong>. A 7 PM–7 AM shift on the 31st belongs to the 31st, not split across two months. This keeps a single shift from being cut in half by a month boundary.</p>
+    <h3 id="my-12-hour-shift-only-paid-for-115-hours">"My 12-hour shift only paid for 11.5 hours"</h3>
+    <p>Break time is unpaid — it's subtracted from your hours. If your employer pays through breaks, set the break to 0.</p>
+    <h3 id="why-did-my-shift-pay-so-much">"Why did my shift pay so much?"</h3>
+    <p>If the start and end time are identical, Moonlight treats it as a full 24-hour shift and asks you to confirm before saving. If you didn't mean that, open the shift and set the real end time.</p>
+    <h3 id="my-salary-shows-9860-instead-of-10000">"My salary shows $9,860 instead of $10,000"</h3>
+    <p>Base pay accrues daily, at 1/365 of the annual amount per day. A 30-day month therefore shows slightly under a round month's salary and a 31-day month slightly over. It evens out across the year — it isn't a rounding error.</p>
+    <h3 id="my-imported-shifts-show-a-dash-instead-of-pay">"My imported shifts show a dash instead of pay"</h3>
+    <p>An imported shift doesn't know what it pays until you tell Moonlight once. Open <strong>Settings → Schedule sync → Edit mappings</strong> and match each shift name to a shift type. Moonlight remembers the mapping and applies it to all future shifts with that name.</p>
+    <p>Until a name is mapped, its shifts still show up and still fire reminders, but they have no pay and their timer can't be started.</p>
+    <h3 id="my-goal-shows-0-even-though-im-earning">"My goal shows $0 even though I'm earning"</h3>
+    <p>Goals count <strong>shift earnings only</strong> by default. If your income is salary, or your goal is scoped to a particular employer or shift type, switch the goal to <strong>All income</strong> — or check that its filter matches the work you're actually doing.</p>
+    <h3 id="half-my-shifts-are-missing-from-awaiting-pay">"Half my shifts are missing from <em>Awaiting pay</em>"</h3>
+    <p>Pay reconciliation matches shifts to an employer's paycheck, so shifts logged without an employer aren't included. Their income still counts in every total, report and export.</p>
+    <h3 id="the-money-landed-last-week-but-im-only-reconciling-now">"The money landed last week, but I'm only reconciling now"</h3>
+    <p>When you tap <strong>Mark paid</strong>, set <strong>Deposited</strong> to the day the money arrived. It becomes each shift's paid date, and that's the date the 1099 summary and the quarterly estimated-tax cards count the income on — so a December deposit stays in December. For one shift, swipe it left or press and hold it: <strong>Paid in full</strong> always uses today; for another day, choose <strong>Enter amount</strong> instead.</p>
+    <p>The <strong>Paid</strong> switch on a shift's own screen works the same way: turning it on records the shift as paid in full today, and saves that at once. If a different amount or day landed, correct it under the switch and tap <strong>Save</strong>. (If you have other changes on that screen that aren't saved yet, the switch waits and is saved with them.)</p>
+    <h3 id="how-do-i-see-last-months-report">"How do I see last month's report?"</h3>
+    <p>On <strong>Reports</strong>, tap the arrow beside the month's name to step back a month (or a week, or a pay period), or tap a bar in the <em>Earnings by month</em> chart to show that month. A custom range is still there for anything else.</p>
+    <h3 id="where-are-my-scheduled-shifts">"Where are my scheduled shifts?"</h3>
+    <p>At the top of the Shifts <strong>list</strong>, above the months of logged shifts: <strong>Ready to log</strong> holds planned shifts whose time has passed (each logs in one tap), and <strong>Upcoming</strong> holds the ones still ahead. A long series shows its next few; tap <strong>Show all</strong> for the rest. They are also on the <strong>calendar</strong> view, as rings on their days. <em>See all</em> on Home's Upcoming section opens the list on that section.</p>
+    <h3 id="how-do-i-find-a-shift">"How do I find a shift?"</h3>
+    <p>On <strong>Shifts</strong>, tap the magnifying glass in the bar and type: a shift type, an employer, a word from a note, or a month or day ("october", "oct 20"). The shifts that match are listed as you type, whichever view you were in; close the search to go back to it.</p>
+    <h3 id="can-i-mark-a-shift-paid-without-opening-it">"Can I mark a shift paid without opening it?"</h3>
+    <p>Yes: press and hold the shift wherever it's listed. You'll see the shift with a short menu: <strong>Mark paid</strong> (paid in full, today) while it isn't paid yet, and <strong>Delete</strong>, which asks first. A planned shift offers <strong>Edit</strong>, or <strong>Log shift</strong> once it has ended. On the paycheck list the menu holds <strong>Paid in full</strong> and <strong>Enter amount…</strong>, the same two the swipe shows.</p>
+    </section>
+    <section aria-labelledby="timer">
+    <h2 id="timer">Timer</h2>
+    <h3 id="i-clocked-out-but-the-shift-isnt-saved">"I clocked out but the shift isn't saved"</h3>
+    <p>Clocking out opens a <strong>Confirm shift</strong> screen — nothing is saved until you tap <strong>Save</strong>. The screen says <em>"Nothing's saved yet"</em> at the top. If you swiped away or tapped Discard, the shift wasn't recorded.</p>
+    <h3 id="the-app-logged-a-20-minute-shift-when-i-worked-twelve-hours">"The app logged a 20-minute shift when I worked twelve hours"</h3>
+    <p>If a timer is left running and the app is closed for a long time, Moonlight won't invent hours you might not have worked — it asks you to confirm the real end time. Always check the times on the confirm screen before saving; you can edit them there.</p>
+    <p>Only one timer runs at a time. Starting a second one ends the first, and Moonlight warns you before it does.</p>
+    <h3 id="the-live-activity-doesnt-appear-on-my-lock-screen">"The Live Activity doesn't appear on my Lock Screen"</h3>
+    <p>It needs iOS 16.2 or later and Live Activities enabled for Moonlight in <strong>iOS Settings → Moonlight → Live Activities</strong>.</p>
+    <p>If you clock out from the Lock Screen, the card changes to "Clocked out" and stays until you open Moonlight: the shift is saved when you confirm its times there.</p>
+    <h3 id="where-did-the-on-shift-banner-go">"Where did the On shift banner go?"</h3>
+    <p>On iOS 26 and later, a shift you're timing sits in the bar just above the tabs, on every tab: its clock, what it has earned, and two buttons (a break or clock out; resume; or, before it starts, start now or log later). Earlier iOS versions keep the banner at the top of Home.</p>
+    </section>
+    <section aria-labelledby="reminders-widgets-and-calendar">
+    <h2 id="reminders-widgets-and-calendar">Reminders, widgets and calendar</h2>
+    <h3 id="my-reminders-stopped-working">"My reminders stopped working"</h3>
+    <p>Check <strong>iOS Settings → Moonlight → Notifications</strong> is allowed. If you declined the first time iOS asked, the switches in Moonlight won't stay on and you'll see a note in Settings → Notifications explaining why. That screen lists every reminder, each with a line saying when it comes.</p>
+    <p>Two other things are worth knowing: reminders are scheduled for roughly the next 30 days, and <strong>quiet hours</strong> change when they arrive. A reminder before a shift that would land in quiet hours is skipped — so a 30-minute pre-shift reminder for a night shift may never arrive — while the after-shift reminder waits until quiet hours end. Adjust quiet hours in Settings → Notifications.</p>
+    <p>The quarterly estimated-tax reminder comes a week before each IRS deadline, or on the morning of the deadline if you turn it on inside that last week.</p>
+    <p><strong>Payday reminders</strong> come at 9 a.m. on payday, or a day or two before if you choose, for each employer with a payday set (Settings → Employers). They never show an amount. A weekend payday moves to the business day before unless you choose otherwise; bank holidays aren't counted.</p>
+    <p>Reminders for a shift stop automatically once you log it. While you are timing a shift, it gets one only if the timer is still running half an hour after the shift should have ended.</p>
+    <h3 id="my-widget-shows-the-wrong-figure">"My widget shows the wrong figure"</h3>
+    <p>Widgets refresh when you open Moonlight. If you haven't opened it since your last shift, the widget may show yesterday's numbers. Open the app and it will catch up.</p>
+    <h3 id="my-widget-just-shows-dots">"My widget just shows dots"</h3>
+    <p><strong>Hide earnings on lock screen</strong> is on (Settings → Preferences). That replaces every amount on the Lock Screen and in Live Activities with dots. Turn it off to see figures again.</p>
+    <h3 id="i-turned-off-apple-calendar-sync-and-the-events-are-still-there">"I turned off Apple Calendar sync and the events are still there"</h3>
+    <p>Calendar sync is one-way and only adds <strong>scheduled</strong> shifts. Turning it off stops new events being created but leaves existing ones in your calendar — delete them in the Calendar app. Sign out &amp; remove data, Delete account and switching to another account do delete the events that phone added, as long as Moonlight still has access to the calendar. Editing an event in Calendar doesn't change anything in Moonlight.</p>
+    <p>Shift amounts are kept out of calendar events unless you explicitly turn that on.</p>
+    <h3 id="shifts-i-planned-on-my-ipad-arent-in-my-calendar">"Shifts I planned on my iPad aren't in my calendar"</h3>
+    <p>Each device adds the shifts you schedule on it. If you plan from more than one device, turn on Apple Calendar sync on each; pointed at the same iCloud calendar, every shift then shows once rather than twice. Shifts from a connected schedule, such as Amion, aren't added: that schedule's own calendar already shows them.</p>
+    <h3 id="calendar-sync-wont-turn-on">"Calendar sync won't turn on"</h3>
+    <p>Three different causes:</p>
+    <ul>
+      <li><strong>Permission</strong> — allow Calendar access for Moonlight in iOS Settings.</li>
+      <li><strong>No writable calendar</strong> — add one in the Calendar app, then try again.</li>
+      <li><strong>Unavailable</strong> — the device doesn't support it.</li>
+    </ul>
+    </section>
+    <section aria-labelledby="connected-schedules-amion-qgenda-ical">
+    <h2 id="connected-schedules-amion-qgenda-ical">Connected schedules (Amion, QGenda, iCal)</h2>
+    <h3 id="how-do-i-connect-my-schedule">"How do I connect my schedule?"</h3>
+    <p>Settings → Schedule sync → Connect.</p>
+    <ul>
+      <li><strong>Amion:</strong> sign in at amion.com, go to My Schedule, and copy the calendar URL.</li>
+      <li><strong>QGenda:</strong> log in on desktop, click Sync, and copy your subscription URL.</li>
+    </ul>
+    <p><strong>Any other iCal or webcal link works too</strong> — choose Amion, paste the full URL, and tap Connect. There isn't a separate "Other" option yet.</p>
+    <h3 id="my-schedule-changed-but-moonlight-still-shows-the-old-shift">"My schedule changed but Moonlight still shows the old shift"</h3>
+    <p>A connected feed refreshes while the app is open, not in the background. Open Moonlight, or use Re-sync on the Schedule sync screen. Feeds import upcoming shifts only, not past ones.</p>
+    <h3 id="it-says-it-cant-read-the-link">"It says it can't read the link"</h3>
+    <p>That almost always means the URL isn't the calendar (iCal) link — a link to a web page that <em>shows</em> your schedule won't work. Make sure you copied the whole URL.</p>
+    </section>
+    <section aria-labelledby="account-sync">
+    <h2 id="account-sync">Account &amp; sync</h2>
+    <h3 id="signing-in">Signing in</h3>
+    <p>Signing in is optional; Moonlight works the same without it. Enter your email and Moonlight sends a 6-digit code. Codes expire after an hour, and you can ask for a new one once a minute. There's no password.</p>
+    <h3 id="what-comes-back-on-a-new-phone">What comes back on a new phone</h3>
+    <p>Signed in, your shifts, workplaces, shift types, scheduled shifts, expenses, income goals, reconciliation records, timer sessions and preferences restore. Credentials, CME records, connected schedule links and your Apple Calendar choice don't — reconnect a feed and turn the calendar mirror back on after restoring.</p>
+    <h3 id="moving-to-a-new-phone">Moving to a new phone</h3>
+    <ul>
+      <li><strong>First, install Moonlight</strong> on the new phone.</li>
+      <li><strong>Then sign in, before you run setup.</strong> Settings → Account &amp; sync, or "Sign in to restore" on the empty Home screen. Setting up first creates a workplace and shift type that would sit beside your restored ones.</li>
+      <li><strong>Keep Moonlight open</strong> until the badge says <strong>Synced</strong>.</li>
+    </ul>
+    <h3 id="what-the-badge-means">What the badge means</h3>
+    <ul>
+      <li><strong>Local</strong> — not signed in; everything stays on this phone.</li>
+      <li><strong>Restoring…</strong> — the first download to an empty phone.</li>
+      <li><strong>Backing up…</strong> — the first upload from a phone that already had data.</li>
+      <li><strong>Syncing…</strong> — changes waiting to upload.</li>
+      <li><strong>Synced</strong> — your account is up to date.</li>
+      <li><strong>Offline</strong> — no connection; changes stay on the phone and upload when you're back.</li>
+      <li><strong>Sync paused</strong> — this phone holds another account's data and is waiting for your answer.</li>
+      <li><strong>Sync issue</strong> — sync keeps failing, or some records couldn't be restored. Open Settings → Account &amp; sync, tap Try again, or email <a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a>. Records that couldn't be restored are tried again each time Moonlight starts, and the warning goes once they arrive; its Email support button lists them by ID so we can find them.</li>
+    </ul>
+    <h3 id="signing-in-with-a-different-account">Signing in with a different account</h3>
+    <p>If this phone holds another account's data, Moonlight asks before doing anything. Choosing to continue removes that data from this phone — including credentials and CME records, which aren't stored anywhere else — before the new account's data comes down.</p>
+    <h3 id="sign-out-remove-data-or-delete-the-account">Sign out, remove data, or delete the account</h3>
+    <ul>
+      <li><strong>Sign out</strong> keeps everything on this phone. Sign back in any time.</li>
+      <li><strong>Sign out &amp; remove data</strong> clears this phone, credentials and CME included, and leaves your account as it is. Use it before selling or returning a phone.</li>
+      <li><strong>Delete account</strong> permanently deletes your account and everything synced to it, and clears this phone. It can't be undone.</li>
+      <li><strong>Already signed out?</strong> If this phone still holds an account's data, Settings → Account &amp; sync offers <strong>Remove data from this phone</strong>, which clears it the same way.</li>
+    </ul>
+    </section>
+    <section aria-labelledby="import-and-export">
+    <h2 id="import-and-export">Import and export</h2>
+    <h3 id="what-the-exports-contain">What the exports contain</h3>
+    <ul>
+      <li><strong>Shifts (CSV)</strong> — every shift you've logged, with the total of each shift's expenses.</li>
+      <li><strong>Expenses (CSV)</strong> — every expense.</li>
+      <li><strong>Period report (PDF)</strong> — the current period's earnings, formatted for an accountant.</li>
+      <li><strong>1099 summary (PDF)</strong> — the income you marked received from each employer in a tax year you choose, 1099 and W-2 kept apart, dated by the day it was paid. Shifts you haven't marked paid are listed separately and not counted.</li>
+      <li><strong>Deductions summary (PDF)</strong> — a tax year's expenses by category: the deductible ones totalled as on the Deductions screen, the rest listed apart.</li>
+      <li><strong>Pay reconciliation (PDF)</strong> — as of today: shifts awaiting pay, shifts paid more or less than expected, and the shortfalls you've flagged or recovered, with the same totals as the Reconcile screen.</li>
+    </ul>
+    <p>Exports don't include goals, credentials or CME. <strong>Licence and DEA numbers are stored on this device, masked in the app, and never included in any export.</strong></p>
+    <h3 id="importing-a-csv">Importing a CSV</h3>
+    <p>Settings → Import from CSV takes a Moonlight shifts export or expenses export. It expects Moonlight's own column headers and reads the first row to tell which file it is.</p>
+    <ul>
+      <li><strong>Shifts.</strong> Employers and shift types are matched by name and created if they don't exist yet. A newly created employer starts as 1099, paid biweekly, so open it in Settings and set its real payment type and pay schedule before relying on the 1099 summary. An imported shift keeps the amount in the file. If that amount isn't what its shift type pays, changing its hours (by setting a start and end time) or its days scales the amount, so a 10-hour, $2,000 shift set to 9 hours becomes $1,800.</li>
+      <li><strong>Expenses.</strong> Each row's category has to be one of Moonlight's, such as Mileage or Board exams.</li>
+    </ul>
+    <p>Rows with a problem, like a missing date or an unknown category, are skipped and listed by line. Importing the same file again is safe: rows already present are skipped rather than duplicated.</p>
+    <p>Import brings in shifts and expenses — not goals or credentials.</p>
+    </section>
+    <section aria-labelledby="deleting-and-editing">
+    <h2 id="deleting-and-editing">Deleting and editing</h2>
+    <h3 id="can-you-undo-a-delete">"Can you undo a delete?"</h3>
+    <p>No — deleting is permanent and there's no trash. Moonlight tells you before anything irreversible.</p>
+    <p>Some things are reversible by design: <strong>archiving</strong> an employer keeps all their shift history and they can be reactivated later. Deleting a shift type keeps the shifts you already logged with it.</p>
+    <p>One thing to watch: if you delete an employer or shift type that a goal was filtered to, that goal widens to cover all income rather than disappearing.</p>
+    <h3 id="my-shift-type-isnt-in-the-picker">"My shift type isn't in the picker"</h3>
+    <p>Two possible reasons: it's limited to particular weekdays and today isn't one of them, or it's scoped to a different employer than the one selected. Both are set in the shift type's editor.</p>
+    <h3 id="how-do-i-move-a-scheduled-shift-to-a-different-day">"How do I move a scheduled shift to a different day?"</h3>
+    <p>Open the planned shift, tap <strong>Edit</strong>, and change its <strong>Date</strong>. Its start and end times go with it. In a repeating series this moves that one shift; <em>All future in series</em> has no date, because each shift in a series keeps its own day.</p>
+    <h3 id="i-renewed-a-credential-and-my-cme-hours-disappeared">"I renewed a credential and my CME hours disappeared"</h3>
+    <p>CME hours are counted per renewal cycle, so renewing starts a fresh cycle. Your earlier entries are still recorded.</p>
+    </section>
+    <section aria-labelledby="money-and-tax">
+    <h2 id="money-and-tax">Money and tax</h2>
+    <h3 id="i-changed-the-currency-and-nothing-converted">"I changed the currency and nothing converted"</h3>
+    <p>Changing currency changes the <strong>symbol only</strong> — it doesn't convert any amounts. Moonlight doesn't apply exchange rates.</p>
+    <h3 id="mileage-and-deductions">Mileage and deductions</h3>
+    <p>Mileage uses the IRS standard rate for the year of the expense — 72.5¢ per mile for 2026, 70¢ for 2025.</p>
+    <p>To correct an expense, open Deductions, expand its category and tap the expense. A mileage expense you edit keeps the rate it was saved at, and an imported one keeps its own amount per mile (or, with no miles, its amount), unless you move it into another year; then its miles are priced at that year's rate.</p>
+    <p>To keep an expense with the shift it was for (parking at that hospital, say), open the shift and tap <strong>Add expense</strong>. Deleting the shift keeps its expenses.</p>
+    <p><strong>Moonlight is for organisation and reminders, not tax calculation or advice.</strong> The deductions view deliberately excludes some categories from its headline total. The quarterly estimated-tax cards count only income from employers set to 1099, and only once you've marked it paid, dated by the day it was paid; shifts not yet marked paid are shown beneath each card but not counted. Review everything with a tax professional.</p>
+    </section>
+    <section aria-labelledby="privacy">
+    <h2 id="privacy">Privacy</h2>
+    <p>There is no analytics, no advertising, and no tracking of any kind. Once Moonlight Pro is on sale, the app also checks your subscription with RevenueCat each time it opens, and Apple's privacy label counts RevenueCat's subscription records as analytics. If you don't sign in, nothing you enter is sent to us. If you do, most of your data is copied to your private account so it can be restored — never your credentials, CME records, connected schedule links or Apple Calendar choice — and Settings → Account &amp; sync → Delete account removes it and asks RevenueCat to delete its record of your account. Remove the data from any other phone that has it too. A connected schedule feed, the Apple Calendar mirror, and anything you export or share also move data off the phone, and the privacy policy describes each in full.</p>
+    <p>Full policy: <strong><a href="https://moonlightshifts.com/privacy">https://moonlightshifts.com/privacy</a></strong></p>
+    </section>
+    <section aria-labelledby="still-stuck">
+    <h2 id="still-stuck">Still stuck?</h2>
+    <p>Email <strong><a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a></strong> with your iOS version, iPhone model, and what happened. If it's about a specific shift, the date helps.</p>
+    </section>
+  </article>
+      <nav class="rail" aria-label="On this page">
+        <p class="rail__title">On this page</p>
+        <ol>
+          <li><a href="#please-read-first-where-your-data-lives">⚠️ Please read first: where your data lives</a></li>
+          <li><a href="#what-moonlight-does">What Moonlight does</a></li>
+          <li><a href="#common-questions">Common questions</a></li>
+          <li><a href="#timer">Timer</a></li>
+          <li><a href="#reminders-widgets-and-calendar">Reminders, widgets and calendar</a></li>
+          <li><a href="#connected-schedules-amion-qgenda-ical">Connected schedules (Amion, QGenda, iCal)</a></li>
+          <li><a href="#account-sync">Account &amp; sync</a></li>
+          <li><a href="#import-and-export">Import and export</a></li>
+          <li><a href="#deleting-and-editing">Deleting and editing</a></li>
+          <li><a href="#money-and-tax">Money and tax</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#still-stuck">Still stuck?</a></li>
+        </ol>
+      </nav>
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <p>Moonlight is published by <strong>October Fourteen LLC</strong>.</p>
+    <p>Questions? <a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a></p>
+  </div>
+</footer>
+</body>
+</html>

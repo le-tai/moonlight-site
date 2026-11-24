@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moonlight — Privacy Policy — Moonlight</title>
+<meta name="description" content="What Moonlight stores on your iPhone, what an optional account uploads, and how to delete it.">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap">
+<style>/*
+ * Moonlight document site.
+ *
+ * The palette and type are lifted from src/theme/tokens.ts so the pages read as part of
+ * the app rather than a stranger's website — a clinician tapping Settings → Privacy
+ * Policy should land somewhere that plainly belongs to the same product. Warm alabaster
+ * ground, deep ink, indigo for action, champagne-bronze used sparingly as a marker.
+ *
+ * The layout is a reading column with a contents rail, not a marketing page: these are
+ * documents, and the job is legibility at a 60–70 character measure on a phone held in
+ * one hand.
+ */
+
+:root {
+  /* Surfaces & ink — neutralLight in tokens.ts */
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface-2: #f2f1ec;
+  --border: #e7e5df;
+  --ink: #1a1a1f;
+  --ink-2: #5c5c66;
+  --ink-3: #696971; /* documented AA on all three surfaces */
+
+  /* Brand — brandLight */
+  --primary: #4f46e5;
+  --primary-pressed: #3f38c4;
+  --primary-tint: rgba(79, 70, 229, 0.1);
+  --accent: #c79a53;
+  --warning-bg: rgba(199, 154, 83, 0.1);
+
+  --measure: 68ch;
+  --rail: 15rem;
+
+  --text-body: clamp(1rem, 0.97rem + 0.16vw, 1.0625rem);
+  --text-h1: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
+  --text-h2: clamp(1.3rem, 1.15rem + 0.7vw, 1.6rem);
+  --text-h3: clamp(1.05rem, 1rem + 0.25vw, 1.15rem);
+
+  --space-section: clamp(2.5rem, 2rem + 2vw, 4rem);
+  --radius: 14px;
+
+  --duration: 160ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* neutralDark + brandDark */
+    --bg: #0d0e16;
+    --surface: #181a26;
+    --surface-2: #222536;
+    --border: #2c2f42;
+    --ink: #f4f4f2;
+    --ink-2: #a6a8b8;
+    --ink-3: #8e91a3; /* lifted from token ink3rd for AA on the darker ground */
+    --primary: #8b86f4; /* lifted from brandDark primary — 4.5:1 on #0D0E16 */
+    --primary-pressed: #a29ef7;
+    --primary-tint: rgba(109, 103, 240, 0.16);
+    --accent: #d8b06a;
+    --warning-bg: rgba(216, 176, 106, 0.12);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--text-body);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.wrap {
+  width: min(100% - 2.5rem, 74rem);
+  margin-inline: auto;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--primary);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 var(--radius) 0;
+  z-index: 10;
+}
+.skip:focus {
+  left: 0;
+}
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(1.6) blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.masthead__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.75rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 8px;
+  background: linear-gradient(150deg, #4f46e5, #201d63);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+}
+
+.brand__name {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.masthead nav {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.masthead nav a {
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+}
+
+.masthead nav a:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+
+.masthead nav a[aria-current='page'] {
+  color: var(--primary);
+  background: var(--primary-tint);
+}
+
+/* ---------- layout ---------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-block: var(--space-section) calc(var(--space-section) * 1.2);
+  align-items: start;
+}
+
+@media (min-width: 62rem) {
+  .layout:has(.rail) {
+    grid-template-columns: minmax(0, 1fr) var(--rail);
+  }
+}
+
+.doc {
+  max-width: var(--measure);
+}
+
+/* ---------- document type ---------- */
+
+.doc h1 {
+  font-size: var(--text-h1);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  margin: 0 0 1.25rem;
+  text-wrap: balance;
+}
+
+.lede {
+  font-size: 1.2em;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin: 0 0 2rem;
+  max-width: 46ch;
+}
+
+.doc h2 {
+  font-size: var(--text-h2);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: var(--space-section) 0 0.85rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  text-wrap: balance;
+}
+
+/* The champagne marker is the one decorative flourish, and it earns its place by
+   making section starts scannable in a 300-line support document. */
+.doc h2::before {
+  content: '';
+  display: block;
+  width: 1.75rem;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.doc h3 {
+  font-size: var(--text-h3);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin: 2rem 0 0.5rem;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.doc p {
+  margin: 0 0 1.05rem;
+}
+
+.doc strong {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.doc em {
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.doc ul {
+  margin: 0 0 1.15rem;
+  padding-left: 0;
+  list-style: none;
+}
+
+.doc li {
+  position: relative;
+  padding-left: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.doc li::before {
+  content: '';
+  position: absolute;
+  left: 0.25rem;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.doc hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: var(--space-section) 0;
+}
+
+/* The h2 already draws its own rule; a bare <hr> immediately before one doubles it. */
+.doc hr + h2 {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.doc a {
+  color: var(--primary);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+.doc a:hover {
+  color: var(--primary-pressed);
+  text-decoration-thickness: 2px;
+}
+
+/* The "please read first" section carries a ⚠️ in its heading. Give the WHOLE
+   section a surface — semantic colour, not decoration: it is the one thing on the
+   support page a user must not skim past. Styling the heading alone left the card
+   ending mid-section, which reads as a rendering fault rather than emphasis. */
+.doc .callout {
+  background: var(--warning-bg);
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.4rem 0.5rem;
+  margin-top: var(--space-section);
+}
+
+.doc .callout h2 {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.doc .callout h2::before {
+  display: none;
+}
+
+.doc .callout > :last-child {
+  margin-bottom: 1rem;
+}
+
+/* ---------- contents rail ---------- */
+
+.rail {
+  display: none;
+}
+
+@media (min-width: 62rem) {
+  .rail {
+    display: block;
+    position: sticky;
+    top: 5.5rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+}
+
+.rail__title {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.rail ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-left: 1px solid var(--border);
+}
+
+.rail li {
+  margin: 0;
+}
+
+.rail a {
+  display: block;
+  padding: 0.4rem 0 0.4rem 0.9rem;
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+
+.rail a:hover {
+  color: var(--ink);
+  border-left-color: var(--accent);
+}
+
+/* ---------- hub cards ---------- */
+
+.cards {
+  display: grid;
+  gap: 1rem;
+  margin: 0 0 2rem;
+}
+
+@media (min-width: 40rem) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  display: block;
+  padding: 1.6rem 1.5rem 1.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+}
+
+.card h2 {
+  margin: 0 0 0.5rem;
+  border: 0;
+  padding: 0;
+  font-size: 1.25rem;
+}
+
+.card h2::before {
+  display: none;
+}
+
+.card p {
+  margin: 0 0 0.9rem;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+}
+
+.card__go {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--primary);
+}
+
+.card:hover .card__go::after {
+  transform: translateX(3px);
+}
+
+.card__go::after {
+  content: '→';
+  display: inline-block;
+  margin-left: 0.35rem;
+  transition: transform var(--duration) var(--ease);
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+  border-top: 1px solid var(--border);
+  padding-block: 2rem 3rem;
+  color: var(--ink-3);
+  font-size: 0.9375rem;
+}
+
+.footer p {
+  margin: 0 0 0.35rem;
+}
+
+.footer a {
+  color: var(--primary);
+}
+
+/* ---------- focus ---------- */
+
+a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="masthead">
+  <div class="wrap masthead__inner">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">M</span>
+      <span class="brand__name">Moonlight</span>
+    </a>
+    <nav aria-label="Documents">
+      <a href="/privacy" aria-current="page">Privacy</a>
+      <a href="/support">Support</a>
+    </nav>
+  </div>
+</header>
+<main id="main" class="wrap layout">
+  <article class="doc">
+    <h1>Moonlight — Privacy Policy</h1>
+    <p><strong>Last updated: 11 November 2026</strong></p>
+    <p>Moonlight is a shift and income tracker for clinicians. This policy explains exactly what the app stores, what leaves your device, and what never does.</p>
+    <p>The short version: Moonlight works entirely offline and keeps your data on your iPhone. An account is optional. If you sign in, most of your data is copied to your private account so it can be restored on another phone; if you don't, nothing is sent to us at all. We do not use analytics, advertising, or tracking of any kind. The one exception is RevenueCat, which confirms Moonlight Pro subscriptions: once Pro is on sale, the app checks with it each time it opens, and Apple's privacy label counts its subscription records as analytics (section 5).</p>
+    <hr>
+    <section aria-labelledby="1-who-we-are">
+    <h2 id="1-who-we-are">1. Who we are</h2>
+    <p>Moonlight is published by <strong>October Fourteen LLC</strong>, which is the controller of the data described below.</p>
+    <p>Contact: <strong><a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a></strong></p>
+    </section>
+    <section aria-labelledby="2-what-moonlight-stores-on-your-iphone">
+    <h2 id="2-what-moonlight-stores-on-your-iphone">2. What Moonlight stores on your iPhone</h2>
+    <p>Everything you enter is written to a private database inside the app's own storage area, which other apps cannot read:</p>
+    <ul>
+      <li><strong>Shifts</strong> — dates, times, breaks, pay structures, calculated and actual amounts, and any free-text notes you add.</li>
+      <li><strong>Workplaces</strong> — employer name, pay rates, schedule and paydays, and any contact name, email, phone or address you choose to record.</li>
+      <li><strong>Shift types</strong>, <strong>scheduled shifts</strong>, <strong>income goals</strong>, <strong>expenses and mileage</strong>, <strong>paycheck reconciliation records</strong>, and <strong>timer sessions</strong>.</li>
+      <li><strong>Credentials and CME</strong> — licence, DEA and certification records, their expiry dates and reference numbers, plus CME entries.</li>
+      <li><strong>Connected schedules</strong> — the link to an Amion or other iCal feed, if you connect one.</li>
+      <li><strong>App preferences</strong> — currency, week start, theme, notification and reminder settings.</li>
+    </ul>
+    </section>
+    <section aria-labelledby="3-what-leaves-your-device-if-you-sign-in">
+    <h2 id="3-what-leaves-your-device-if-you-sign-in">3. What leaves your device if you sign in</h2>
+    <p>Signing in is optional, and until you do, <strong>nothing is sent to us</strong> (RevenueCat, which confirms Moonlight Pro subscriptions once Pro is on sale, is covered in section 5). If you create an account, the following is copied to our cloud database so it can be restored on another device, and kept up to date while you stay signed in:</p>
+    <ul>
+      <li><strong>Shifts</strong> — dates, times, breaks, amounts, override reasons, paid amounts and dates, and <strong>your notes</strong>.</li>
+      <li><strong>Workplaces</strong> — name, pay details, schedule and paydays, and any contact name, email, phone or address you entered for that workplace.</li>
+      <li><strong>Shift types</strong> — names, colours and pay structures.</li>
+      <li><strong>Scheduled shifts</strong> — planned times, notes, and the shift name and event identifier from a connected feed (never the feed's link).</li>
+      <li><strong>Expenses</strong> — category, amount, miles, date, note, and the shift it's for, if any.</li>
+      <li><strong>Income goals</strong>, <strong>paycheck reconciliation records</strong> and <strong>timer sessions</strong>.</li>
+      <li><strong>Preferences</strong> — currency, week start, theme, notification and reminder settings, quiet hours, and saved colours.</li>
+    </ul>
+    <h3 id="what-is-never-uploaded-even-when-signed-in">What is never uploaded, even when signed in</h3>
+    <p>These stay on your device. There is no place on our server to put them at all:</p>
+    <ul>
+      <li><strong>Credentials and CME records</strong> — including <strong>DEA numbers, medical licence numbers</strong>, certification details and their notes.</li>
+      <li><strong>Connected schedule links</strong> — the feed address often contains a private token that grants access to your schedule, so it is never uploaded to your account.</li>
+      <li><strong>Your Apple Calendar connection</strong> — which calendar you mirror shifts into, and whether amounts are included.</li>
+      <li><strong>Purchase entitlement</strong> — whether you have Moonlight Pro comes from the App Store, through RevenueCat (section 5), never from our database.</li>
+    </ul>
+    <p>Because these are never uploaded, signing in on a new phone does not bring them back. Only an iPhone backup does (section 8).</p>
+    <h3 id="about-notes-please-read">⚠️ About notes — please read</h3>
+    <p>Notes on shifts, expenses and scheduled shifts are <strong>free text, and they sync</strong> to your account when you are signed in. They are also included in CSV exports.</p>
+    <p><strong>Do not put patient-identifiable information in them.</strong> Moonlight is a personal income tracker, not a clinical record system, and it is not designed, secured, or contracted to hold protected health information. Use notes for things like "held over for handover" or "promised a differential" — not patient names, medical record numbers, or clinical details.</p>
+    </section>
+    <section aria-labelledby="4-your-account">
+    <h2 id="4-your-account">4. Your account</h2>
+    <p>If you sign in, we store your <strong>email address</strong> for the sole purpose of identifying your account and sending you a one-time sign-in code. We never send marketing email.</p>
+    <p>Moonlight uses passwordless email sign-in. There is no password to store, and we do not offer or use any third-party or social login, so no social-login provider learns from it that you use this app.</p>
+    </section>
+    <section aria-labelledby="5-who-processes-your-data">
+    <h2 id="5-who-processes-your-data">5. Who processes your data</h2>
+    <p>We use Supabase (<a href="https://supabase.com">https://supabase.com</a>) to host the database and handle sign-in. Your account data is stored in the United States. Supabase acts as our processor and does not use your data for its own purposes.</p>
+    <p>Every row in the database is protected by row-level security: the database itself enforces that only your own account can read or write your data, not just the app.</p>
+    <p>Moonlight Pro subscriptions go through the App Store: Apple takes the payment, and we use RevenueCat (<a href="https://www.revenuecat.com">https://www.revenuecat.com</a>) to confirm a subscription is active. Once Pro is on sale, the app checks with RevenueCat each time it opens, whether or not you subscribe. Each check sends an identifier (below), your device model, your App Store country and preferred languages, and a device identifier Apple gives our apps on your phone, and, like any web request, your device's IP address. RevenueCat is also told whether you allow apps to ask to track you (Moonlight never asks). It keeps a record for each identifier the app uses with it, not only for subscribers: when it was first and last seen, the app and iOS version it last saw, your language, and the country worked out from your IP address (RevenueCat says it doesn't keep the address itself).</p>
+    <p>The identifier is never your email address: it is your account's ID while your account's data is on the phone, even after you sign out, and otherwise a random one. After your data leaves the phone, or another account's replaces it, your account's ID can still be sent for a while: until the phone has switched identifiers and has sent anything it had queued under the old one, which can need a connection to RevenueCat. A switch to another account's ID sends both IDs in one request.</p>
+    <p>When you buy, restore or renew a subscription, RevenueCat receives your App Store purchase history for Moonlight, and it can also hear about your subscription directly from Apple. It keeps your subscription history: trials, renewals, cancellations and refunds. Apple's privacy label lists these records as analytics. RevenueCat never receives your shifts, notes, or anything else you enter. It processes all of this for us, in the United States. Under its terms it doesn't sell it, and it uses it to provide its service to us, to improve that service and to protect against fraud, and as the law requires. It keeps these records until they are deleted, with your account (section 10) or when we stop using RevenueCat. Moonlight Pro isn't on sale yet, and until it is the app doesn't contact RevenueCat at all.</p>
+    </section>
+    <section aria-labelledby="6-the-other-connections-the-app-makes">
+    <h2 id="6-the-other-connections-the-app-makes">6. The other connections the app makes</h2>
+    <p>Two features move data off the phone once you turn them on, signed in or not. Neither sends anything to us.</p>
+    <ul>
+      <li><strong>Connecting a schedule feed.</strong> If you add an Amion, QGenda or other iCal link, Moonlight fetches that address directly from your device to read your schedule. The request goes to whoever hosts that feed, not to us. It carries none of your Moonlight data, but like any web request it tells that host your device's IP address and when you asked. If you set the feed to refresh daily or every six hours, this happens on its own each time you open the app, not only when you tap Re-sync. Set the feed to manual if you would rather it only ever happen when you ask.</li>
+      <li><strong>Mirroring shifts to Apple Calendar.</strong> If you turn this on, each scheduled shift is written into a calendar you choose, using Apple's own on-device calendar. The event's title is your shift type and employer name, and the expected amount is included only if you switch that on separately. What happens to that calendar afterwards — iCloud sync, a work account your employer can see — is governed by your iOS settings and Apple's policies, not by Moonlight.</li>
+    </ul>
+    </section>
+    <section aria-labelledby="7-files-and-messages-you-send-yourself">
+    <h2 id="7-files-and-messages-you-send-yourself">7. Files and messages you send yourself</h2>
+    <p>Settings → Export data produces six things: a CSV of your shifts, a CSV of your expenses, a period earnings report PDF, a 1099 income summary PDF, a deductions summary PDF, and a pay reconciliation PDF. The shift CSV includes your shift notes and the expense CSV includes your expense notes; the PDFs carry employer names, shift dates and types, expense categories and amounts but no notes. None of the six includes anything from Credentials or CME.</p>
+    <p>Separately, when a paycheck comes up short, <strong>Draft a note</strong> composes a short message — your employer's name, the shift, and the two amounts — and hands it to the share sheet. Nothing is addressed or sent for you.</p>
+    <p>In every case the file or message goes to whatever you pick from the iOS share sheet — Mail, Messages, Files, iCloud Drive, AirDrop — and once it leaves the app it is outside Moonlight's control.</p>
+    </section>
+    <section aria-labelledby="8-backups">
+    <h2 id="8-backups">8. Backups</h2>
+    <p>An encrypted iCloud or Finder backup of your iPhone includes Moonlight's database, credentials and CME records included, and restores it along with the app. That backup is Apple's, governed by your iCloud settings; we have no access to it.</p>
+    </section>
+    <section aria-labelledby="9-what-we-do-not-do">
+    <h2 id="9-what-we-do-not-do">9. What we do not do</h2>
+    <ul>
+      <li><strong>No analytics of our own.</strong> Apart from RevenueCat's, for subscriptions (section 5), the app has no SDK that reports on how you use it: no analytics, telemetry or crash reporting. The one thing Apple's privacy label counts as analytics is RevenueCat's subscription records.</li>
+      <li><strong>No advertising</strong>, no ad identifiers, no ad networks.</li>
+      <li><strong>No tracking.</strong> We do not track you across other apps or websites, and we do not share, sell, or broker your data with anyone.</li>
+      <li><strong>No crash reporting service</strong>, no profiling, and no automated decision-making.</li>
+    </ul>
+    </section>
+    <section aria-labelledby="10-deleting-your-data">
+    <h2 id="10-deleting-your-data">10. Deleting your data</h2>
+    <ul>
+      <li><strong>Delete your account</strong> — in the app, under Settings → Account &amp; sync. This permanently deletes your account and everything synced to it, asks RevenueCat to delete its record under your account's ID, and removes Moonlight's data from that phone, including the credential and CME records that were never uploaded. It cannot be undone. Another phone that still has your account's data keeps using that ID with RevenueCat, which can start a new record under it, until you remove the data there too (below).</li>
+      <li><strong>Remove data from one phone</strong> — Settings → Account &amp; sync → Sign out &amp; remove data. This clears everything stored on that phone, including credential and CME records, and leaves your account as it is. On a phone already signed out that still holds an account's data, the same screen offers Remove data from this phone.</li>
+      <li>Both, and switching the phone to another account, also delete the shift events that phone added to your Apple Calendar, if Moonlight still has access to the calendar.</li>
+      <li><strong>Ordinary sign-out</strong> leaves your data on the phone so you can sign back in.</li>
+      <li><strong>Deleting a single record</strong> — deleting a shift, scheduled shift, expense, goal, paycheck flag, credential or CME record erases the text you typed on it (its notes, a goal's label, a CME's title, a credential's numbers and issuer) from the phone, and from your account if it had synced there. The record itself stays, marked deleted, with its dates and amounts, so your other devices remove it too. A deleted credential keeps its name, and a deleted shift type or employer keeps its name because the shifts that used it still show it; an employer's contact details are erased.</li>
+      <li><strong>Not signed in</strong> — delete the app to remove its database and everything in it. If an iPhone backup includes Moonlight, delete or replace that backup too.</li>
+      <li><strong>RevenueCat's records under a random ID</strong> — once Pro is on sale, a phone uses a random ID with RevenueCat until an account's data is on it, and a new one after that data is removed. Those records are tied to no account, so deleting an account doesn't delete them, and nothing we hold connects them to you. Deleting the app stops it sending them anything; if you subscribed under one, Apple can still tell RevenueCat about that subscription until it ends.</li>
+    </ul>
+    <p>When you delete your account, your synced data is removed immediately by the database itself, and RevenueCat is asked to delete its record of your account, which it then does on its side, keeping only what its own retention policy requires; we keep no separate copy. If RevenueCat can't take that request at the time, your account is deleted anyway, and we keep only its ID, with when it was deleted and how our last request went, to ask RevenueCat again each day until it has the request; then that record is deleted too. Our hosting provider's routine infrastructure backups, if any, rotate out within 7 days. We keep your data for as long as your account exists and do not retain it after deletion, apart from that record while RevenueCat's deletion is pending.</p>
+    <p>Deleting your account doesn't cancel a Moonlight Pro subscription. Apple bills it, so cancel it in the iOS Settings app → your name → Subscriptions.</p>
+    </section>
+    <section aria-labelledby="11-security">
+    <h2 id="11-security">11. Security</h2>
+    <ul>
+      <li>Data in transit is encrypted with TLS.</li>
+      <li>Your sign-in session is stored encrypted on the phone, with a key held in the iOS Keychain that cannot be restored onto a different device.</li>
+      <li>Access to your rows is enforced by the database, per account.</li>
+      <li>On the phone, your data sits in the app's own storage area, which iOS protects with the device passcode and hardware encryption. Keep a passcode set.</li>
+    </ul>
+    <p>No system is perfectly secure, but we do not store anything we do not need.</p>
+    </section>
+    <section aria-labelledby="12-children">
+    <h2 id="12-children">12. Children</h2>
+    <p>Moonlight is intended for working clinicians and is not directed at children under 13. We do not knowingly collect data from children.</p>
+    </section>
+    <section aria-labelledby="13-your-rights">
+    <h2 id="13-your-rights">13. Your rights</h2>
+    <p>Depending on where you live, you may have rights to access, correct, export or delete your data. Moonlight gives you all of these directly in the app: your data is visible and editable throughout, exportable from Settings → Export data, and deletable as described above, RevenueCat's record of your account included. For anything else, contact us at <strong><a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a></strong>.</p>
+    </section>
+    <section aria-labelledby="14-changes-to-this-policy">
+    <h2 id="14-changes-to-this-policy">14. Changes to this policy</h2>
+    <p>If we change what the app collects or where it goes, we will update this page and change the date at the top. Material changes will be surfaced in the app before they apply to you.</p>
+    </section>
+    <section aria-labelledby="15-contact">
+    <h2 id="15-contact">15. Contact</h2>
+    <p>Questions about this policy or your data: <strong><a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a></strong></p>
+    </section>
+  </article>
+      <nav class="rail" aria-label="On this page">
+        <p class="rail__title">On this page</p>
+        <ol>
+          <li><a href="#1-who-we-are">1. Who we are</a></li>
+          <li><a href="#2-what-moonlight-stores-on-your-iphone">2. What Moonlight stores on your iPhone</a></li>
+          <li><a href="#3-what-leaves-your-device-if-you-sign-in">3. What leaves your device if you sign in</a></li>
+          <li><a href="#4-your-account">4. Your account</a></li>
+          <li><a href="#5-who-processes-your-data">5. Who processes your data</a></li>
+          <li><a href="#6-the-other-connections-the-app-makes">6. The other connections the app makes</a></li>
+          <li><a href="#7-files-and-messages-you-send-yourself">7. Files and messages you send yourself</a></li>
+          <li><a href="#8-backups">8. Backups</a></li>
+          <li><a href="#9-what-we-do-not-do">9. What we do not do</a></li>
+          <li><a href="#10-deleting-your-data">10. Deleting your data</a></li>
+          <li><a href="#11-security">11. Security</a></li>
+          <li><a href="#12-children">12. Children</a></li>
+          <li><a href="#13-your-rights">13. Your rights</a></li>
+          <li><a href="#14-changes-to-this-policy">14. Changes to this policy</a></li>
+          <li><a href="#15-contact">15. Contact</a></li>
+        </ol>
+      </nav>
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <p>Moonlight is published by <strong>October Fourteen LLC</strong>.</p>
+    <p>Questions? <a href="mailto:support@moonlightshifts.com">support@moonlightshifts.com</a></p>
+  </div>
+</footer>
+</body>
+</html>
